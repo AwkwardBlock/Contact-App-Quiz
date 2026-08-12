@@ -1,0 +1,104 @@
+import json
+
+print("Welcome to the Command-line Contact Book:    ")
+
+# Menu Item Functions
+# Menu Item 1
+
+
+def view_contacts():
+    with open("data.json", "r") as file:
+        return json.load(file)
+
+# Menu Item 2
+
+
+def add_contacts():
+    with open("data.json", "r") as file:
+        data = json.load(file)
+
+    first_name = input("firstname: ")
+    last_name = input("lastname: ")
+    contact_age = int(input("Age: "))
+
+    new_record = {
+        "firstname": first_name,
+        "lastname": last_name,
+        "age": contact_age
+    }
+
+    data.append(new_record)
+
+    with open("data.json", "w") as file:
+        json.dump(data, file, indent=4)
+
+# Menu Item 3
+
+
+# def search_contacts():
+
+
+while True:
+    action = int(input(
+        "To View contacts, press 1: \nTo add a new contact, press 2: \nTo search for a contact, press 3:  \nTo delete a contact, press 4:   \nTo Exit, press 5:    "))
+
+    if action == 1:
+        print(f"\n{view_contacts()}\n")
+
+    elif action == 2:
+        add_contacts()
+        print("Contact saved!\n")
+
+    elif action == 3:
+        with open("data.json", "r") as file:
+            data = json.load(file)
+
+        result = []
+        search_name = input("Enter a firstname:    ")
+
+        for person in data:
+
+            if person['firstname'].lower() == search_name.lower():
+                result.append(person)
+                print(result)
+            else:
+                print("That name did not return a result.")
+
+    elif action == 4:
+        with open("data.json", "r") as file:
+            data = json.load(file)
+
+        print("You have chosen to delete an entry.\nWhat is the complete first and last name and age of the entry you'd like to delete?:")
+
+        firstdel = input("firstname:    ")
+
+        lastdel = input("lastname:    ")
+
+        try:
+            agedel = int(input("age:    "))
+        except ValueError:
+            print("Please enter a number.")
+            continue
+
+        confirm_delete = input(
+            f"You have chosen to remove {firstdel} {lastdel}, age: {agedel}. Would you like to proceed?:    y/n")
+        if confirm_delete == "y":
+
+            remove_data = {
+                "firstname": firstdel,
+                "lastname": lastdel,
+                "age": agedel
+            }
+
+            data.remove(remove_data)
+
+            with open("data.json", "w") as file:
+                json.dump(data, file, indent=4)
+        else:
+            print("Maybe some other time then.")
+    elif action == 5:
+        print("Goodbye")
+        break
+    else:
+        print("\nYou weren't paying attention\n")
+        continue
