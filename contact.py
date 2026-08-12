@@ -35,7 +35,18 @@ def add_contacts():
 # Menu Item 3
 
 
-# def search_contacts():
+def search_contacts():
+    with open("data.json", "r") as file:
+        data = json.load(file)
+
+    search_name = input("Enter a firstname:    ")
+
+    for person in data:
+        if person.get("firstname") == search_name:
+            print(f"\n{person}\n")
+        else:
+            print(
+                f"\n{search_name} did not return a result.\nOur database is case-sensitive. Please try again.\n")
 
 
 while True:
@@ -50,19 +61,18 @@ while True:
         print("Contact saved!\n")
 
     elif action == 3:
-        with open("data.json", "r") as file:
-            data = json.load(file)
+        search_contacts()
+        # with open("data.json", "r") as file:
+        #     data = json.load(file)
 
-        result = []
-        search_name = input("Enter a firstname:    ")
+        # search_name = input("Enter a firstname:    ")
 
-        for person in data:
-
-            if person['firstname'].lower() == search_name.lower():
-                result.append(person)
-                print(result)
-            else:
-                print("That name did not return a result.")
+        # for person in data:
+        #     if person.get("firstname") == search_name:
+        #         print(f"\n{person}\n")
+        #     else:
+        #         print(
+        #             f"\n{search_name} did not return a result.\nOur database is case-sensitive. Please try again.\n")
 
     elif action == 4:
         with open("data.json", "r") as file:
