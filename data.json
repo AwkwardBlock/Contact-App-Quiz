@@ -1,8 +1,16 @@
 [
     {
+        "firstname": "tyler",
+        "lastname": "block",
+        "age": 35,
+        "email": "tibby@tibby.com",
+        "phone": "1231231234"
+    },
+    {
         "firstname": "aine",
         "lastname": "block",
-        "age": 32,
-        "email": "aine@blockmail.com"
+        "age": 20,
+        "email": "aine@wife.com",
+        "phone": "1231231235"
     }
 ]

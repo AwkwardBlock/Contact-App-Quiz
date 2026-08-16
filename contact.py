@@ -1,7 +1,12 @@
 import json
 import re
 
-print("Welcome to the Command-line Contact Book:    ")
+print("=================================================")
+print("-------------------------------------------------")
+print("    WELCOME TO THE COMMAND-LINE CONTACT BOOK:    ")
+print("-------------------------------------------------")
+print("=================================================")
+
 # json mgmt
 
 
@@ -21,9 +26,23 @@ def write_file(data):
 def view_contacts():
     contacts = read_file()
 
+    if not contacts:
+        print("\nYour contact book is empty.\n")
+        return
+
+    print("\n===================================")
+    print("          MY CONTACT BOOK")
+    print("===================================")
+
     for val in contacts:
+
+        print("--------------------------------")
         print(
-            f"\nName:{val['firstname']} {val['lastname']} \nAge:{val['age']} \nEmail:{val['email']}")
+            f"   Name:  {val['firstname'].title()} {val['lastname'].title()}")
+        print(f"   Age:   {val['age']}")
+        print(f"   Email: {val['email']}")
+        print(f"   Phone: {val['phone']}")
+        print("--------------------------------")
 
 # Menu Item 2
 
@@ -32,7 +51,16 @@ def add_contacts():
     data = read_file()
 
     first_name = input("firstname: ").lower()
+
+    if first_name.lower() == "cancel":
+        print("Adding contact cancelled.")
+        return
+
     last_name = input("lastname: ").lower()
+
+    if last_name.lower() == "cancel":
+        print("Adding contact cancelled")
+        return
 
     try:
         contact_age = int(input("Age: "))
@@ -50,11 +78,23 @@ def add_contacts():
         print("\nInvalid email address.\n")
         return
 
+    phone_num = input("phone:  ")
+
+    def quick_check_phone(phone_num):
+        PHONE_REGEX = re.compile(
+            r"(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}")
+        return bool(re.fullmatch(PHONE_REGEX, phone_num))
+
+    if not quick_check_phone(phone_num):
+        print("\nInvalid Phone Number\n")
+        return
+
     new_record = {
         "firstname": first_name,
         "lastname": last_name,
         "age": contact_age,
-        "email": email_address
+        "email": email_address,
+        "phone": phone_num
     }
 
     data.append(new_record)
@@ -70,14 +110,31 @@ def search_contacts():
 
     search_name = input("Enter a name:    ").lower()
 
+    if search_name == "cancel":
+        print("Search contact cancelled.")
+        return
+
     found = False
 
     for person in data:
-        if person.get("firstname") == search_name or person.get("lastname") == search_name:
-            print(f"\n{person}\n")
+        firstname = person.get("firstname", "").strip().lower()
+        lastname = person.get("lastname", "").strip().lower()
+
+        if search_name in firstname or search_name in lastname:
+            print("===========================")
+            print("---------------------------")
+            print("       CONTACT FOUND       ")
+            print("---------------------------")
+            print("===========================")
+            print(
+                f"\nName:  {person["firstname"].title()} {person["lastname"].title()}")
+            print(f"\nAge:   {person["age"]}")
+            print(f"\nemail: {person["email"]}")
+            print(f"\nphone: {person["phone"]}")
+            print("---------------------------")
             found = True
 
-    if found == False:
+    if not found:
         print(
             f"\n{search_name} did not return a result.\n")
 
@@ -89,48 +146,59 @@ def delete_contacts():
 
     print("You have chosen to delete an entry.\nWhich contact should be deleted?:    ")
 
-    firstdel = input("firstname:    ").lower()
+    firstdel = input("firstname:    ").strip().lower()
+    if firstdel == "cancel":
+        print("Delete contact cancelled")
+        return
 
     lastdel = input("lastname:    ").lower()
-
-    try:
-        agedel = int(input("age:    "))
-    except ValueError:
-        print("\nPlease enter a number.\n")
+    if lastdel == "cancel":
+        print("Delete contact cancelled")
         return
 
     del_record = {
         "firstname": firstdel,
-        "lastname": lastdel,
-        "age": agedel
+        "lastname": lastdel
     }
 
-    found = False
-
+    target_person = None
     for person in data:
-        if person == del_record:
-            print(f"You have chosen to delete {del_record}")
-            found = True
+        if (
+            person.get("firstname", "").lower() == firstdel
+            and person.get("lastname", "").lower() == lastdel
+        ):
+            target_person = person
+            break
 
-    if found == False:
+    if not target_person:
         print(f"{del_record} doesn't seem to be in our system.")
         return
 
-    confirm_delete = input("\nWould you like to proceed?:y/n    ")
+    confirm_delete = input("\nWould you like to proceed?:y/n    ").strip()
+
+    if confirm_delete == "cancel":
+        print("Delete contact cancelled")
+        return
 
     if confirm_delete == "y" or confirm_delete == "Y" or confirm_delete == "yes" or confirm_delete == "YES":
-        data.remove(del_record)
+        data.remove(target_person)
         write_file(data)
     else:
         print(f"\nMaybe some other time then.\n")
 
 
 while True:
+    action = input(
+        "\nTo View contacts, press 1: \nTo add a new contact, press 2: \nTo search for a contact, press 3:  \nTo delete a contact, press 4:   \nTo Exit, press 5:\n    \nType \'cancel\' to return to this menu at any time.\n")
+
+    if action.lower() == "cancel":
+        print("\nThat won't do anything here, silly goose\n")
+        continue
+
     try:
-        action = int(input(
-            "\nTo View contacts, press 1: \nTo add a new contact, press 2: \nTo search for a contact, press 3:  \nTo delete a contact, press 4:   \nTo Exit, press 5:    "))
+        action = int(action)
     except ValueError:
-        print("\nHmm. That's not quite right.\n")
+        print("\nHm. That's not quite right.\n")
         continue
 
     if action == 1:
