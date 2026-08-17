@@ -39,6 +39,31 @@ def write_file(data):
         json.dump(data, file, indent=4)
         return
 
+# Menu Item 5
+
+
+def filter_contacts():
+    data = read_file()
+
+    print("\nWhich category would you like to see?")
+    category = input("\n").strip().lower()
+
+    cat_sort = []
+
+    found = False
+
+    for person in data:
+        if person.get("category", "").strip().lower() == category:
+            found = True
+            cat_sort.append(person)
+
+    if not found:
+        cat_sort = "We didn't find that Category"
+        print(cat_sort)
+        return
+
+    print(cat_sort)
+
 # Menu Item 1
 
 
@@ -61,6 +86,7 @@ def view_contacts():
         print(f"   Age:   {val['age']}")
         print(f"   Email: {val['email']}")
         print(f"   Phone: {val['phone']}")
+        print(f"   category: {val['category']}")
         print("--------------------------------")
 
 # Menu Item 2
@@ -99,12 +125,15 @@ def add_contacts():
         print("\nInvalid Phone Number.\n")
         return
 
+    con_cat = input("How do you know this person?:  ").lower()
+
     new_record = {
         "firstname": first_name,
         "lastname": last_name,
         "age": contact_age,
         "email": email_address,
-        "phone": phone_num
+        "phone": phone_num,
+        "category": con_cat
     }
 
     data.append(new_record)
@@ -141,6 +170,7 @@ def search_contacts():
             print(f"\nAge:   {person['age']}")
             print(f"\nemail: {person['email']}")
             print(f"\nphone: {person['phone']}")
+            print(f"\ncategory: {person['category']}")
             print("---------------------------")
             found = True
 
@@ -204,7 +234,8 @@ while True:
     print("2: Add a new contact")
     print("3: Search for a contact")
     print("4: Delete a contact")
-    print("5: Exit")
+    print("5: Filter contacts (temp)")
+    print("6: Exit")
     print("\nReturn to this menu at any time by typing 'cancel'")
 
     action = input("Choose an option: ")
@@ -232,6 +263,9 @@ while True:
         delete_contacts()
 
     elif action == 5:
+        filter_contacts()
+
+    elif action == 6:
         print("Goodbye")
         break
 

@@ -2,22 +2,25 @@
     {
         "firstname": "tyler",
         "lastname": "block",
-        "age": 35,
-        "email": "tibby@tibby.com",
-        "phone": "1231231234"
+        "age": 22,
+        "email": "tyler@block.com",
+        "phone": "1111111111",
+        "category": "church"
     },
     {
         "firstname": "aine",
         "lastname": "block",
-        "age": 20,
-        "email": "aine@wife.com",
-        "phone": "1231231235"
+        "age": 11,
+        "email": "aine@block.com",
+        "phone": "2222222222",
+        "category": "church"
     },
     {
-        "firstname": "gabby",
-        "lastname": "blabby",
-        "age": 22,
-        "email": "gabby@blabby.net",
-        "phone": "1111111111"
+        "firstname": "adam",
+        "lastname": "block",
+        "age": 33,
+        "email": "adam@block.com",
+        "phone": "3333333333",
+        "category": "work"
     }
 ]
