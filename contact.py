@@ -7,12 +7,31 @@ print("    WELCOME TO THE COMMAND-LINE CONTACT BOOK:    ")
 print("-------------------------------------------------")
 print("=================================================")
 
+# REGEX validation
+
+
+def quick_check_email(email_address):
+    EMAIL_REGEX = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    return bool(re.fullmatch(EMAIL_REGEX, email_address.strip()))
+
+
+def quick_check_phone(phone_num):
+    PHONE_REGEX = re.compile(
+        r"(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}")
+    return bool(re.fullmatch(PHONE_REGEX, phone_num))
+
+
 # json mgmt
 
-
 def read_file():
-    with open("data.json", "r") as file:
-        return json.load(file)
+    try:
+        with open("data.json", "r") as file:
+            data = json.load(file)
+            if isinstance(data, list):
+                return data
+            return []
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
 
 
 def write_file(data):
@@ -31,7 +50,7 @@ def view_contacts():
         return
 
     print("\n===================================")
-    print("          MY CONTACT BOOK")
+    print("          MY CONTACT BOOK          ")
     print("===================================")
 
     for val in contacts:
@@ -65,14 +84,10 @@ def add_contacts():
     try:
         contact_age = int(input("Age: "))
     except ValueError:
-        print("\nPlease enter a number.\n")
+        print("\nAge, please, in digits.\n")
         return
 
     email_address = input("email: ").lower()
-
-    def quick_check_email(email_address):
-        EMAIL_REGEX = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-        return bool(re.fullmatch(EMAIL_REGEX, email_address.strip()))
 
     if not quick_check_email(email_address):
         print("\nInvalid email address.\n")
@@ -80,13 +95,8 @@ def add_contacts():
 
     phone_num = input("phone:  ")
 
-    def quick_check_phone(phone_num):
-        PHONE_REGEX = re.compile(
-            r"(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}")
-        return bool(re.fullmatch(PHONE_REGEX, phone_num))
-
     if not quick_check_phone(phone_num):
-        print("\nInvalid Phone Number\n")
+        print("\nInvalid Phone Number.\n")
         return
 
     new_record = {
@@ -127,10 +137,10 @@ def search_contacts():
             print("---------------------------")
             print("===========================")
             print(
-                f"\nName:  {person["firstname"].title()} {person["lastname"].title()}")
-            print(f"\nAge:   {person["age"]}")
-            print(f"\nemail: {person["email"]}")
-            print(f"\nphone: {person["phone"]}")
+                f"\nName:  {person['firstname'].title()} {person['lastname'].title()}")
+            print(f"\nAge:   {person['age']}")
+            print(f"\nemail: {person['email']}")
+            print(f"\nphone: {person['phone']}")
             print("---------------------------")
             found = True
 
@@ -171,7 +181,8 @@ def delete_contacts():
             break
 
     if not target_person:
-        print(f"{del_record} doesn't seem to be in our system.")
+        print(
+            f"{del_record['firstname']} {del_record['lastname']} doesn't seem to be in our system.")
         return
 
     confirm_delete = input("\nWould you like to proceed?:y/n    ").strip()
@@ -183,13 +194,20 @@ def delete_contacts():
     if confirm_delete == "y" or confirm_delete == "Y" or confirm_delete == "yes" or confirm_delete == "YES":
         data.remove(target_person)
         write_file(data)
+        print("Contact deleted!")
     else:
         print(f"\nMaybe some other time then.\n")
 
 
 while True:
-    action = input(
-        "\nTo View contacts, press 1: \nTo add a new contact, press 2: \nTo search for a contact, press 3:  \nTo delete a contact, press 4:   \nTo Exit, press 5:\n    \nType \'cancel\' to return to this menu at any time.\n")
+    print("\n1: View contacts")
+    print("2: Add a new contact")
+    print("3: Search for a contact")
+    print("4: Delete a contact")
+    print("5: Exit")
+    print("\nReturn to this menu at any time by typing 'cancel'")
+
+    action = input("Choose an option: ")
 
     if action.lower() == "cancel":
         print("\nThat won't do anything here, silly goose\n")
@@ -198,7 +216,7 @@ while True:
     try:
         action = int(action)
     except ValueError:
-        print("\nHm. That's not quite right.\n")
+        print("\nPlease choose 1 through 5\n")
         continue
 
     if action == 1:
@@ -212,12 +230,11 @@ while True:
 
     elif action == 4:
         delete_contacts()
-        continue
 
     elif action == 5:
         print("Goodbye")
         break
 
     else:
-        print("\nYou weren't paying attention\n")
+        print("\nPlease choose 1 through 5\n")
         continue
